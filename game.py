@@ -1,24 +1,89 @@
-import random
+
+# import random
 
 
-def create_number_guesser():
+#def create_number_guesser():
     
-    print("guess a number between 1 and 100. I'll tell you if you get my number")
+    #print("guess a number between 1 and 100. I'll tell you if you get my number")
     
-    rand_number = random.randint(1, 100)
-    guess = None
+    #rand_number = random.randint(1, 100)
+    #guess = None
     
-    while rand_number != guess:
-        s = input("Your guess: ")
-        guess = int(s)
-        if rand+number > guess:
-            print("Higher")
-        elif rand_number < guess:
-            print("Lower")
-        else:
-            print("You guessed it! The number is {}" .format(rand_number))
+    #while rand_number != guess:
+        #s = input("Your guess: ")
+        #guess = int(s)
+        #if rand_number > guess:
+            #print("Higher")
+        #elif rand_number < guess:
+            #print("Lower")
+        #else:
+            #print("You guessed it! The number is {}" .format(rand_number))
             
             
-    if __name__ == '__main__':
+
     
-        create_number_guesser()
+#create_number_guesser()
+
+from tkinter import * 
+import random 
+
+
+
+
+GAME_WIDTH = 700
+GAME_HEIGHT = 700
+SPEED = 50
+SPACE_SIZE = 50
+BODY_PARTS = 3
+SNAKE_COLOR = "#00FF00"
+FOOD_COLOR = "#FF0000"
+BACKGROUNd_COLOR = "#000000"
+
+class Snake:
+    pass
+
+class Food:
+    pass
+
+def next_turn():
+    pass
+
+def change_direction() :
+    pass
+
+def check_collisions() :
+    pass
+
+def game_over() :
+    pass
+
+window = Tk()
+window.title("Snake game")
+window.resizable(False, False)
+
+score = 0
+direction = 'down'
+
+label = Label(window, text = "Score:{}".format(score), font = ('consolas', 40))
+label.pack()
+
+canvas = Canvas(window, bg = BACKGROUNd_COLOR, heigh = GAME_HEIGHT, width = GAME_WIDTH)
+canvas.pack()
+
+window.update()
+
+window_width = window.winfo_width()
+window_height = window.winfo_height()
+screen_width = window.winfo_screenwidth()
+screen_height = window.winfo_screenheight()
+
+x = int((screen_width/2) - (window_width/2))
+y = int((screen_height/2) - (window_height/2))
+
+window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+snake = Snake()
+food = Food()
+
+
+window.mainloop()
