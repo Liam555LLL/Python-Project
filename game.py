@@ -1,89 +1,207 @@
-
-# import random
-
-
-#def create_number_guesser():
-    
-    #print("guess a number between 1 and 100. I'll tell you if you get my number")
-    
-    #rand_number = random.randint(1, 100)
-    #guess = None
-    
-    #while rand_number != guess:
-        #s = input("Your guess: ")
-        #guess = int(s)
-        #if rand_number > guess:
-            #print("Higher")
-        #elif rand_number < guess:
-            #print("Lower")
-        #else:
-            #print("You guessed it! The number is {}" .format(rand_number))
-            
-            
-
-    
-#create_number_guesser()
-
-from tkinter import * 
-import random 
-
-
-
-
-GAME_WIDTH = 700
-GAME_HEIGHT = 700
-SPEED = 50
-SPACE_SIZE = 50
-BODY_PARTS = 3
-SNAKE_COLOR = "#00FF00"
-FOOD_COLOR = "#FF0000"
-BACKGROUNd_COLOR = "#000000"
-
-class Snake:
-    pass
-
-class Food:
-    pass
-
-def next_turn():
-    pass
-
-def change_direction() :
-    pass
-
-def check_collisions() :
-    pass
-
-def game_over() :
-    pass
-
-window = Tk()
-window.title("Snake game")
-window.resizable(False, False)
-
+import turtle
+import time
+import random
+# start values being set
+delay = 0.1
 score = 0
-direction = 'down'
+high_score = 0
+apples_eaten = 0
 
-label = Label(window, text = "Score:{}".format(score), font = ('consolas', 40))
-label.pack()
+# Setup screen
+wn = turtle.Screen()
+wn.title("Math Snake")
+wn.bgcolor("grey")
+wn.setup(width=600, height=600)
+wn.tracer(0)
 
-canvas = Canvas(window, bg = BACKGROUNd_COLOR, heigh = GAME_HEIGHT, width = GAME_WIDTH)
-canvas.pack()
+# Snake head Properties
+head = turtle.Turtle()
+head.speed(0)
+head.shape("square")
+head.color("green")
+head.penup()
+head.goto(0, 0)
+head.direction = "stop"
 
-window.update()
+# Food Properties
+food = turtle.Turtle()
+food.speed(0)
+food.shape("circle")
+food.color("red")
+food.penup()
+food.goto(0, 100)
 
-window_width = window.winfo_width()
-window_height = window.winfo_height()
-screen_width = window.winfo_screenwidth()
-screen_height = window.winfo_screenheight()
+segments = []
 
-x = int((screen_width/2) - (window_width/2))
-y = int((screen_height/2) - (window_height/2))
+# Score display
+pen = turtle.Turtle()
+pen.speed(0)
+pen.color("white")
+pen.penup()
+pen.hideturtle()
+pen.goto(0, 260)
+pen.write("Score: 0  High Score: 0", align="center", font=("Courier", 24, "normal"))
 
-window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+# Movement
+def go_up():
+    if head.direction != "down":
+        head.direction = "up"
+def go_down():
+    if head.direction != "up":
+        head.direction = "down"
+def go_left():
+    if head.direction != "right":
+        head.direction = "left"
+def go_right():
+    if head.direction != "left":
+        head.direction = "right"
 
-snake = Snake()
-food = Food()
+def move():
+    if head.direction == "up":
+        head.sety(head.ycor() + 20)
+    if head.direction == "down":
+        head.sety(head.ycor() - 20)
+    if head.direction == "left":
+        head.setx(head.xcor() - 20)
+    if head.direction == "right":
+        head.setx(head.xcor() + 20)
 
+# Math challenge function
+def math_challenge(round_num):
+    global score
 
-window.mainloop()
+    # Random operation
+    ops = ['+', '-', '*', '/']
+    op = random.choice(ops)
+
+    # Make it harder each round
+    min_num = 1 * round_num
+    max_num = 10 * round_num
+    a = random.randint(min_num, max_num)
+    b = random.randint(min_num, max_num)
+
+    # Make division clean
+    if op == '/':
+        a = a * b
+        correct = round(a / b, 2)
+    elif op == '*':
+        correct = a * b
+    elif op == '+':
+        correct = a + b
+    else:
+        correct = a - b
+
+    # Ask player
+    question = f"Round {round_num}: What is {a} {op} {b}?"
+    try:
+        answer = turtle.textinput("Math Challenge!", question)
+        if answer is None:
+            turtle.textinput("Result", "No answer! -10 points.")
+            score -= 10
+        else:
+            answer = float(answer)
+            if round(answer, 2) == round(correct, 2):
+                turtle.textinput("Result", "✅ Correct! +15 points!")
+                score += 15
+            else:
+                turtle.textinput("Result", f"❌ Wrong! Answer was {correct}. -10 points.")
+                score -= 10
+    except:
+        turtle.textinput("Result", "Invalid input! -10 points.")
+        score -= 10
+
+    # RE-ENABLE movement after question
+    wn.listen()
+    wn.onkeypress(go_up, "w")
+    wn.onkeypress(go_down, "s")
+    wn.onkeypress(go_left, "a")
+    wn.onkeypress(go_right, "d")
+
+# Keyboard setup
+wn.listen()
+wn.onkeypress(go_up, "w")
+wn.onkeypress(go_down, "s")
+wn.onkeypress(go_left, "a")
+wn.onkeypress(go_right, "d")
+
+# Main game loop
+while True:
+    wn.update()
+
+    # Border collision
+    if (head.xcor() > 290 or head.xcor() < -290 or
+        head.ycor() > 290 or head.ycor() < -290):
+        time.sleep(1)
+        head.goto(0, 0)
+        head.direction = "stop"
+
+        for segment in segments:
+            segment.goto(1000, 1000)
+        segments.clear()
+
+        score = 0
+        apples_eaten = 0
+        delay = 0.1
+        pen.clear()
+        pen.write(f"Score: {score}  High Score: {high_score}",
+                  align="center", font=("Courier", 24, "normal"))
+
+    # Eat food
+    if head.distance(food) < 20:
+        x = random.randint(-290, 290)
+        y = random.randint(-290, 290)
+        food.goto(x, y)
+
+        new_segment = turtle.Turtle()
+        new_segment.speed(0)
+        new_segment.shape("square")
+        new_segment.color("lightgreen")
+        new_segment.penup()
+        segments.append(new_segment)
+
+        delay -= 0.001
+        score += 10
+        apples_eaten += 1
+
+        # Trigger math every 5 apples
+        if apples_eaten % 5 == 0:
+            round_num = apples_eaten // 5
+            math_challenge(round_num)
+
+        if score > high_score:
+            high_score = score
+
+        pen.clear()
+        pen.write(f"Score: {score}  High Score: {high_score}",
+                  align="center", font=("Courier", 24, "normal"))
+
+    # Move body
+    for i in range(len(segments) - 1, 0, -1):
+        x = segments[i - 1].xcor()
+        y = segments[i - 1].ycor()
+        segments[i].goto(x, y)
+    if len(segments) > 0:
+        segments[0].goto(head.xcor(), head.ycor())
+
+    move()
+
+    # Self collision
+    for segment in segments:
+        if segment.distance(head) < 20:
+            time.sleep(1)
+            head.goto(0, 0)
+            head.direction = "stop"
+
+            for segment in segments:
+                segment.goto(1000, 1000)
+            segments.clear()
+            score = 0
+            apples_eaten = 0
+            delay = 0.1
+            pen.clear()
+            pen.write(f"Score: {score}  High Score: {high_score}",
+                      align="center", font=("Courier", 24, "normal"))
+
+    time.sleep(delay)
+
+wn.mainloop()
