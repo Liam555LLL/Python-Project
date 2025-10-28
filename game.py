@@ -10,7 +10,7 @@ apples_eaten = 0
 # Setup screen
 wn = turtle.Screen()
 wn.title("Math Snake")
-wn.bgcolor("grey")
+wn.bgcolor("black")
 wn.setup(width=600, height=600)
 wn.tracer(0)
 
